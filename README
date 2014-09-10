@@ -1,0 +1,62 @@
+TOOLS is a collection of utilities for I/O, distance, similarity computation of discrete sequences and univariate time series.
+
+Data Format
+===========
+Data is stored as text files. Each discrete sequence or time series is specified as a single line. A discrete sequence is represented as space separated string integers. Each integer represents a symbol. A time series is represented as space separated string of floating point values.
+
+A sequence/time series is internally stored as a vector of integers/floats.
+List of functions:
+
+I/O
+====
+1. Tokenize - Parses a string into a vector of strings, integers or floats.
+2. readSequences - Reads a vector of discrete sequences or time series from an input stream.
+3. printSequences - Print sequences to an output stream.
+4. printSequence - Print a sequence to an output stream.
+Manipulation
+============
+1. loadMap - Load the map representing pairwise symbol weights (used by WSMC similarity measure).
+2. printMap - Save the map representing pairwise symbol weights (used by WSMC similarity measure).
+3. findMax - Find the maximum occurring symbol in a set of discrete sequences.
+
+
+Discrete Sequence Similarity
+============================
+1. Simple Matching Coefficient
+float SMC(std::vector<int> &a, std::vector<int> &b);
+2. Weighted Simple Matching Coefficient
+float WSMC(std::vector<int> &a,std::vector<int> &b,std::map<pair<int,int>,float>&alphaStd::Map);
+3. Normalized Longest Common Subsequence using Dynamic Programming (O(mn))
+float LCS_DP(std::vector<int> &a, std::vector<int> &b);
+4. Normalized Longest Common Subsequence using Hybrid of Hunt Szymanski and Dynamic Programming (Budalakoti et al, 2007).
+float LCS_HY(std::vector<int> &a, std::vector<int> &b,int max_symbol=-1,int max_occ_any_symbol=-1);
+5. Distance between bitstd::maps (Kumar et al 2005)
+float BITMAP(std::vector<int> &a,std::vector<int> &b, int level);
+6. Similarity using cross correlation (Protopapas et al 2007)
+float CROSSCORR(std::std::vector<float> &a, std::std::vector<float> &b,fftw_p
+lan plan_forward, fftw_plan plan_backward, double *fin, fftw_complex *fout,fftw_complex *bin, double *bout);
+
+
+Time Series Distance
+====================
+/* DIST - Wrapper function for calling different distance measures
+   1 - Euclidean
+   2 - Dynamic Time Warp (DTW)
+   3 - DTW with Sakuro Chiba Band
+   4 - LB_KEOGH (Keogh, E. (2002).  Exact indexing of dynamic time warping)
+*/
+float DIST(std::vector<float> &a,std::vector<float> &b,int measure);
+
+float EUC(std::vector<float> &a,std::vector<float> &b);
+float DTW(std::vector<float> &a,std::vector<float> &b);
+float DTW_SC(std::vector<float> &a,std::vector<float> &b);
+float LB_KEOGH(std::vector<float> &a, std::vector<float> &b);
+
+/* pairwiseDist - Calculate pairwise distance between two sets of time series
+ */
+void pairwiseDist(std::vector<std::vector<float> > &sequences1,std::vector<std::vector<float> > &sequences2,std::vector<std::vector<float> > &pairwise, int msr);
+
+/* queryNN - Finds the distance of query time series to the nn^{th} nearest neighbor in DB using the LBKeogh lower bound as proposed in Ratanamahantana and Keogh 2004. Returns the distance to the nn^th nearest neighbor and index stores its id in DB.
+*/
+float queryNN(std::vector<float> &query, std::vector<std::vector<float> > &DB, int nn, unsigned int *index);
+
